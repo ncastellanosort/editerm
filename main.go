@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	"golang.org/x/term"
@@ -38,21 +37,26 @@ func main() {
 
   t := term.NewTerminal(os.Stdout, "")
 
+	var textBuff []byte
+
 	for {
 
-		// guardar cada letra presionada ASCII
 		buf := make([]byte, 1)
-
 		_, err :=	os.Stdin.Read(buf)
-
-		str := fmt.Sprintf("ascii (%c)\n", buf[0])
-
-		file.Write(buf)
-		t.Write([]byte(str))
 
 		// backspace
 		if buf[0] == 127 {
-			buf = buf[:len(buf) - 1]
+			textBuff = textBuff[:len(textBuff) - 1]
+			file.Truncate(0) // size 0b to rewrite
+			file.Seek(0,0) // start of the file
+			file.Write(textBuff)
+			t.Write([]byte("\b \b")) // clean terminal
+
+		} else if len(textBuff) >= 0 {
+			textBuff = append(textBuff, buf[0])
+
+			file.Write([]byte{textBuff[len(textBuff) - 1]})
+			t.Write([]byte{textBuff[len(textBuff) - 1]})
 		}
 
 		if err != nil {
