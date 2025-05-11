@@ -1,6 +1,6 @@
 # Terminal Text Editor
 
-Needes
+Needed
 ```
 go get golang.org/x/term
 ```
