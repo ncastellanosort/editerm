@@ -1,16 +1,43 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
-	"github.com/charmbracelet/x/term"
+	"golang.org/x/term"
 )
 
+/*
+
+0: stdin (entrada estándar) — el flujo de datos para la entrada, generalmente el teclado.
+
+1: stdout (salida estándar) — el flujo de datos para la salida, generalmente la terminal.
+
+2: stderr (error estándar) — para mensajes de error, también generalmente a la terminal.
+
+
+*/
+
 func main() {
-	if term.IsTerminal(os.Stdin.Fd()) {
-		fmt.Println("si")
-	} else {
-		fmt.Println("no")
+
+	oldState, err := term.MakeRaw(int(os.Stdin.Fd()))
+	if err != nil {
+		panic(err)
 	}
+
+	defer term.Restore(int(os.Stdin.Fd()), oldState)
+
+
+	t := term.NewTerminal(os.Stdout, "")
+
+	for {
+
+		_, err := t.ReadLine()
+
+		if err != nil {
+			panic(err)
+		}
+
+	}
+
+
 }
