@@ -18,12 +18,10 @@ func main() {
 
 	defer ter.DisableRawMode(state)
 
-
 	ter.ClearTerminal()
 
   t := term.NewTerminal(os.Stdout, "")
 
 	ter.Start(t, argsFile)
-
 
 }
