@@ -1,6 +1,7 @@
 package ter
 
 import (
+	"log"
 	"os"
 
 	"golang.org/x/term"
@@ -13,7 +14,7 @@ func ClearTerminal() {
 func EnableRawMode() (*term.State, error) {
 	oldState, err := term.MakeRaw(int(os.Stdin.Fd()))
 	if err != nil {
-		panic(err)
+		log.Fatalf("err making terminal raw %v", err)
 	}
 
 	return oldState, nil
