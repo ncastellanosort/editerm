@@ -5,18 +5,33 @@ import (
 	"io"
 	"log"
 	"os"
-
-	"golang.org/x/term"
 )
 
-func Start(t *term.Terminal, d string) {
+type Editor struct {
+	userTerminal UserTerm
+	file *os.File
+	buffer []byte
+}
 
-	f, err := check(d)
-	if err != nil {
-		log.Fatalf("err checking the file %v", err)
+func NewEditor(f *os.File) *Editor {
+
+	userTerminal := NewUserTerm()
+	userTerminal.StartTerminal()
+
+	var buffer []byte
+
+	return &Editor{
+		userTerminal: *userTerminal,
+		file: f,
+		buffer: buffer,
 	}
-	defer f.Close()
+}
 
+func (e *Editor) Start() {
+
+	defer e.file.Close()
+
+	// arreglar aca
 	textBuff, err := data(f)
 	if err != nil {
 		log.Fatalf("err fetching data of the file %v", err)
@@ -65,15 +80,6 @@ func Start(t *term.Terminal, d string) {
 
 	}
 }
-
-func check(d string) (*os.File, error) {
-    f, err := os.OpenFile(d, os.O_RDWR|os.O_CREATE, 0644)
-    if err != nil {
-        return nil, fmt.Errorf("error opening the file: %w", err)
-    }
-    return f, nil
-}
-
 
 func data(f *os.File) ([]byte, error) {
 	return io.ReadAll(f)

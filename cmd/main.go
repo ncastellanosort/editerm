@@ -1,27 +1,23 @@
 package main
 
 import (
+	"log"
 	"os"
 	"term/internal/ter"
-
-	"golang.org/x/term"
 )
 
 func main() {
 
 	argsFile := os.Args[1]
 
-	state, err := ter.EnableRawMode()
+	file, err := os.OpenFile(argsFile, os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
-	defer ter.DisableRawMode(state)
+	editor := ter.NewEditor(file)
+	editor.Start()
 
-	ter.ClearTerminal()
 
-  t := term.NewTerminal(os.Stdout, "")
-
-	ter.Start(t, argsFile)
 
 }
