@@ -20,6 +20,14 @@ func NewUserTerm() *UserTerm {
 	}
 }
 
+func (u *UserTerm) WriteText(text []byte) error {
+	_, err := u.sysTerm.Write(text)
+	if err != nil {
+		return fmt.Errorf("err cleaning terminal %w", err)
+	}
+	return nil
+}
+
 func (u *UserTerm) clearTerminal() error {
 	 _, err := os.Stdout.Write([]byte("\033[2J\033[H"));
 

@@ -14,9 +14,7 @@ type Editor struct {
 }
 
 func NewEditor(f *os.File) *Editor {
-
 	userTerminal := NewUserTerm()
-	userTerminal.StartTerminal()
 
 	var buffer []byte
 
@@ -28,16 +26,16 @@ func NewEditor(f *os.File) *Editor {
 }
 
 func (e *Editor) Start() {
-
+	var err error
 	defer e.file.Close()
+	e.userTerminal.StartTerminal()
 
-	// arreglar aca
-	textBuff, err := data(f)
+	e.buffer, err = data(e.file)
 	if err != nil {
 		log.Fatalf("err fetching data of the file %v", err)
 	}
 
-	t.Write(textBuff)
+	e.userTerminal.WriteText(e.buffer)
 
 	var prev byte
 
@@ -51,7 +49,7 @@ func (e *Editor) Start() {
 		}
 
 		if buf[0] == 119 && prev == 58 { // w
-			err := save(f, textBuff)
+			err := save(e.file, e.buffer)
 			if err != nil {
 				log.Fatalf("err saving data in the file %v", err)
 			}
@@ -60,13 +58,13 @@ func (e *Editor) Start() {
 
 		// backspace
 		if buf[0] == 127 {
-			textBuff = textBuff[:len(textBuff) - 1]
-			t.Write([]byte("\b \b")) 
+			e.buffer = e.buffer[:len(e.buffer) - 1]
+			e.userTerminal.WriteText([]byte("\b \b")) 
 
-		} else if len(textBuff) >= 0 {
-			textBuff = append(textBuff, buf[0])
+		} else if len(e.buffer) >= 0 {
+			e.buffer = append(e.buffer, buf[0])
 
-			t.Write([]byte{textBuff[len(textBuff) - 1]})
+			e.userTerminal.WriteText([]byte{e.buffer[len(e.buffer) - 1]})
 		}
 
 		if buf[0] == 113 && prev == 58 {

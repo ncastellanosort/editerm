@@ -7,7 +7,6 @@ import (
 )
 
 func main() {
-
 	argsFile := os.Args[1]
 
 	file, err := os.OpenFile(argsFile, os.O_RDWR|os.O_CREATE, 0644)
@@ -17,7 +16,4 @@ func main() {
 
 	editor := ter.NewEditor(file)
 	editor.Start()
-
-
-
 }
