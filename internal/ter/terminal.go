@@ -54,8 +54,3 @@ func (u *UserTerm) disableRawMode() error {
 	return nil
 }
 
-func (u *UserTerm) StartTerminal() {
-	u.enableRawMode()
-	defer u.disableRawMode()
-	u.clearTerminal()
-}

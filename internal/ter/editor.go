@@ -27,9 +27,14 @@ func NewEditor(f *os.File) *Editor {
 
 func (e *Editor) Start() {
 	var err error
-	defer e.file.Close()
-	e.userTerminal.StartTerminal()
 
+	defer e.file.Close()
+
+	e.userTerminal.enableRawMode()
+	defer e.userTerminal.disableRawMode()
+	e.userTerminal.clearTerminal()
+
+	
 	e.buffer, err = data(e.file)
 	if err != nil {
 		log.Fatalf("err fetching data of the file %v", err)
