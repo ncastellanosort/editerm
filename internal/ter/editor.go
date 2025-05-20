@@ -8,7 +8,7 @@ import (
 )
 
 type Editor struct {
-	userTerminal UserTerm
+	userTerminal *UserTerm
 	file *os.File
 	buffer []byte
 }
@@ -19,7 +19,7 @@ func NewEditor(f *os.File) *Editor {
 	var buffer []byte
 
 	return &Editor{
-		userTerminal: *userTerminal,
+		userTerminal: userTerminal,
 		file: f,
 		buffer: buffer,
 	}
@@ -48,6 +48,9 @@ func (e *Editor) Start() {
 
 		buf := make([]byte, 1)
 		_, err :=	os.Stdin.Read(buf)
+		if err != nil {
+			log.Fatalf("err reading buf %v", err)
+		}
 
 	  if buf[0] == 58 { // :
 			prev = buf[0]
@@ -72,7 +75,7 @@ func (e *Editor) Start() {
 			e.userTerminal.WriteText([]byte{e.buffer[len(e.buffer) - 1]})
 		}
 
-		if buf[0] == 113 && prev == 58 {
+		if buf[0] == 113 && prev == 58 { // q
 			prev = 0
 			break
 		}

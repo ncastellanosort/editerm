@@ -17,6 +17,7 @@ func NewUserTerm() *UserTerm {
   s := term.NewTerminal(os.Stdout, "")
 	return &UserTerm{
 		sysTerm: s,
+		state: nil,
 	}
 }
 
@@ -39,10 +40,11 @@ func (u *UserTerm) clearTerminal() error {
 }
 
 func (u *UserTerm) enableRawMode() error {
-	_, err := term.MakeRaw(int(os.Stdin.Fd()))
+	state, err := term.MakeRaw(int(os.Stdin.Fd()))
 	if err != nil {
 		log.Fatalf("err making terminal raw %v", err)
 	}
+	u.state = state
 
 	return nil
 }
